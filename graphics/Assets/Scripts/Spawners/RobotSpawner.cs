@@ -1,63 +1,39 @@
 /// <summary>
-/// The spawner class is responsible for spawning the robots and the paviment.
+/// The RobotSpawner class is responsible for spawning the robots.
 /// </summary>
 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spawner : MonoBehaviour
+public class RobotSpawner : MonoBehaviour
 {
-    public GameObject pavimentPrefab;
-    public GameObject robotPrefab;
-    
-    private int width = 20;
-    private int height = 20;
-    private string[] robots = {"robot-0", "robot-1", "robot-2", "robot-3", "robot-4"};
-    
+    private GameManager gameManager;
+
     /// <summary>
     /// Start is called before the first frame update
     /// </summary>
     void Start()
     {
-        SpawnPaviment();
-        SpawnRobots();
-    }
-
-    /// <summary>
-    /// The SpawnPaviment method is responsible for spawning the paviment.
-    /// </summary>
-    void SpawnPaviment()
-    {
-        for (int i = 0; i < width; ++i)
+        gameManager = GetComponentInParent<GameManager>();
+        if (gameManager == null)
         {
-            for (int j = 0; j < height; j++)
-            {
-                GameObject go = Instantiate(pavimentPrefab, new Vector3(i, 0, j), Quaternion.identity);
-                go.transform.parent = transform;
-
-                if ((i + j) % 2 == 0)
-                {
-                    Renderer renderer = go.GetComponent<Renderer>();
-                    if (renderer != null)
-                    {
-                        Material material = renderer.material;
-                        material.color = new Color(0.5f, 0.5f, 0.5f);
-                    }
-                    else
-                    {
-                        Debug.LogError("Renderer component not found on Paviment object.");
-                    }
-                }
-            }
+            Debug.LogError("GameManager component not found.");
+        } else {
+            SpawnRobots();
         }
     }
 
-    /// <summary>
+     /// <summary>
     /// The SpawnRobots method is responsible for spawning the robots and setting their colors.
     /// </summary>
     void SpawnRobots()
     {
+        int width = gameManager.width;
+        int height = gameManager.height;
+        GameObject robotPrefab = gameManager.robotPrefab;
+        string[] robots = gameManager.robots;
+
         for (int i = 0; i < robots.Length; ++i)
         {
             GameObject go = Instantiate(robotPrefab, new Vector3(Random.Range(0, width), 0.1f, Random.Range(0, height)), Quaternion.identity);
