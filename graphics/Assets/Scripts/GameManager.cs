@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject treeB;
     public GameObject Restaurant;
 
-    public int[] binPosition = { 13, 0 };
+    public int[] binPosition = { 0, 0 };
 
     public int width = 20;
     public int height = 20;

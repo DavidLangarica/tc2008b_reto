@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Paviment
   - Tree
+  - Bin
   layers:
   - Default
   - TransparentFX

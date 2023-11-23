@@ -32,27 +32,19 @@ public class PavimentSpawner : MonoBehaviour
         int width = gameManager.width;
         int height = gameManager.height;
         int binPositionX = gameManager.binPosition[0];
-        int binPositionY = gameManager.binPosition[1];
+        int binPositionZ = gameManager.binPosition[1];
         GameObject pavimentPrefab = gameManager.pavimentPrefab;
         
-        for (int i = 0; i <= width; ++i)
+        for (int i = 0; i < width; ++i)
         {
-            for (int j = 0; j <= height; j++)
+            for (int j = 0; j < height; j++)
             {
                 GameObject go = Instantiate(pavimentPrefab, new Vector3(i, 0, j), Quaternion.identity);
                 go.transform.parent = transform;
 
-                Collider[] hitColliders = Physics.OverlapSphere(go.transform.position, 0.1f);
-                foreach (var hitCollider in hitColliders)
+                if (i == binPositionX && j == binPositionZ)
                 {
-                    if (hitCollider.gameObject.tag == "Tree")
-                    {
-                        Destroy(hitCollider.gameObject);
-                    }
-                }
-
-                if (i == binPositionX && j == binPositionY)
-                {
+                    go.tag = "Bin";
                     Renderer renderer = go.GetComponent<Renderer>();
                     if (renderer != null)
                     {
@@ -74,6 +66,15 @@ public class PavimentSpawner : MonoBehaviour
                     else
                     {
                         Debug.LogError("Renderer component not found on Paviment object.");
+                    }
+                }
+
+                Collider[] hitColliders = Physics.OverlapSphere(go.transform.position, 0.1f);
+                foreach (var hitCollider in hitColliders)
+                {
+                    if (hitCollider.gameObject.tag == "Tree")
+                    {
+                        Destroy(hitCollider.gameObject);
                     }
                 }
             }
