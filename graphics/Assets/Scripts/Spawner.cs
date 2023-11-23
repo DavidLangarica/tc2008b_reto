@@ -13,7 +13,7 @@ public class Spawner : MonoBehaviour
     
     private int width = 20;
     private int height = 20;
-    private int robotCount = 5;
+    private string[] robots = {"robot-0", "robot-1", "robot-2", "robot-3", "robot-4"};
     
     /// <summary>
     /// Start is called before the first frame update
@@ -35,6 +35,20 @@ public class Spawner : MonoBehaviour
             {
                 GameObject go = Instantiate(pavimentPrefab, new Vector3(i, 0, j), Quaternion.identity);
                 go.transform.parent = transform;
+
+                if ((i + j) % 2 == 0)
+                {
+                    Renderer renderer = go.GetComponent<Renderer>();
+                    if (renderer != null)
+                    {
+                        Material material = renderer.material;
+                        material.color = new Color(0.5f, 0.5f, 0.5f);
+                    }
+                    else
+                    {
+                        Debug.LogError("Renderer component not found on Paviment object.");
+                    }
+                }
             }
         }
     }
@@ -44,11 +58,11 @@ public class Spawner : MonoBehaviour
     /// </summary>
     void SpawnRobots()
     {
-        for (int i = 0; i < robotCount; ++i)
+        for (int i = 0; i < robots.Length; ++i)
         {
             GameObject go = Instantiate(robotPrefab, new Vector3(Random.Range(0, width), 0.1f, Random.Range(0, height)), Quaternion.identity);
+            go.name = robots[i];
             go.transform.parent = transform;
-
 
             Transform sphere = go.transform.Find("Sphere");
 
