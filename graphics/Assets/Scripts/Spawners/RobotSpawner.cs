@@ -33,6 +33,8 @@ public class RobotSpawner : MonoBehaviour
         int height = gameManager.height;
         GameObject robotPrefab = gameManager.robotPrefab;
         string[] robots = gameManager.robots;
+        Random.InitState(System.DateTime.Now.Millisecond);
+
 
         for (int i = 0; i < robots.Length; ++i)
         {

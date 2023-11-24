@@ -12,7 +12,10 @@ public class GameManager : MonoBehaviour
     public GameObject robotPrefab;
     public GameObject treeA;
     public GameObject treeB;
-    public GameObject Restaurant;
+    public GameObject binPrefab;
+    public GameObject food1;
+    public GameObject food2;
+    public GameObject food3;
 
     public int[] binPosition = { 0, 0 };
 

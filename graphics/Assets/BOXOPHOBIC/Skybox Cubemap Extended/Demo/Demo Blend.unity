@@ -569,7 +569,7 @@ GameObject:
   - component: {fileID: 224754827}
   - component: {fileID: 224754828}
   m_Layer: 0
-  m_Name: Restaurant
+  m_Name: Bin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -599,9 +599,54 @@ MonoBehaviour:
   m_GameObject: {fileID: 224754826}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f87c82af72fe0854282cca907fad2c21, type: 3}
+  m_Script: {fileID: 11500000, guid: f1c191b2ecd49314ab2e02df8d7d3e32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &275748184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 275748185}
+  - component: {fileID: 275748186}
+  m_Layer: 0
+  m_Name: Food
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &275748185
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 275748184}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1608364827}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &275748186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 275748184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecd529cfeea74414d8995471a41aa18c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalFoodSpawned: 0
 --- !u!1 &299070470
 GameObject:
   m_ObjectHideFlags: 0
@@ -2503,7 +2548,10 @@ MonoBehaviour:
   robotPrefab: {fileID: 5003572191269885324, guid: 9661d2d29c2ee3945a041cb969cb980a, type: 3}
   treeA: {fileID: 4030317326967668591, guid: 5e32e717c4c37d5438d023ce784dee8f, type: 3}
   treeB: {fileID: 6274733261811916834, guid: 1029b653523023a4e8e6c8487dda6392, type: 3}
-  Restaurant: {fileID: 8178900804707432203, guid: 7e3ba9c84508774489302305273b2486, type: 3}
+  binPrefab: {fileID: 937729550311980879, guid: ab56dded2a8a8094f8a7758b1bd6ab6f, type: 3}
+  food1: {fileID: 4096414040807422423, guid: 9aee2c7a3c5844e4f8d8a8812104f9b6, type: 3}
+  food2: {fileID: 3837488405208403677, guid: 5f0cff10d777b6f488dc89867623ddd6, type: 3}
+  food3: {fileID: 4511653200961387578, guid: dbb1eda2436d70e429e70fb4f17cd2a5, type: 3}
   binPosition: 000000000d000000
   width: 20
   height: 20
@@ -2530,6 +2578,7 @@ Transform:
   - {fileID: 706763288}
   - {fileID: 299070471}
   - {fileID: 224754827}
+  - {fileID: 275748185}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1712288050
