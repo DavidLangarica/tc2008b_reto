@@ -646,7 +646,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecd529cfeea74414d8995471a41aa18c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalFoodSpawned: 0
 --- !u!1 &299070470
 GameObject:
   m_ObjectHideFlags: 0
@@ -2524,7 +2523,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1608364827}
-  - component: {fileID: 1608364826}
+  - component: {fileID: 1608364828}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2532,29 +2531,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1608364826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1608364825}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c93565056b2cf514987468b6f43146db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pavimentPrefab: {fileID: 975759898283980419, guid: f1cb92187d4864347804e38179c663b2, type: 3}
-  waiterPrefab: {fileID: 5003572191269885324, guid: 9661d2d29c2ee3945a041cb969cb980a, type: 3}
-  treeA: {fileID: 4030317326967668591, guid: 5e32e717c4c37d5438d023ce784dee8f, type: 3}
-  treeB: {fileID: 6274733261811916834, guid: 1029b653523023a4e8e6c8487dda6392, type: 3}
-  binPrefab: {fileID: 937729550311980879, guid: ab56dded2a8a8094f8a7758b1bd6ab6f, type: 3}
-  food1: {fileID: 4096414040807422423, guid: 9aee2c7a3c5844e4f8d8a8812104f9b6, type: 3}
-  food2: {fileID: 3837488405208403677, guid: 5f0cff10d777b6f488dc89867623ddd6, type: 3}
-  food3: {fileID: 4511653200961387578, guid: dbb1eda2436d70e429e70fb4f17cd2a5, type: 3}
-  width: 20
-  height: 20
-  binPosition: 000000000d000000
 --- !u!4 &1608364827
 Transform:
   m_ObjectHideFlags: 0
@@ -2575,6 +2551,30 @@ Transform:
   - {fileID: 275748185}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1608364828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1608364825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab91fa5f6a357f9449f180f3fc86a65e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pavimentPrefab: {fileID: 975759898283980419, guid: f1cb92187d4864347804e38179c663b2, type: 3}
+  waiterPrefab: {fileID: 5003572191269885324, guid: 9661d2d29c2ee3945a041cb969cb980a, type: 3}
+  treeA: {fileID: 4030317326967668591, guid: 5e32e717c4c37d5438d023ce784dee8f, type: 3}
+  treeB: {fileID: 6274733261811916834, guid: 1029b653523023a4e8e6c8487dda6392, type: 3}
+  binPrefab: {fileID: 937729550311980879, guid: ab56dded2a8a8094f8a7758b1bd6ab6f, type: 3}
+  food1: {fileID: 4096414040807422423, guid: 9aee2c7a3c5844e4f8d8a8812104f9b6, type: 3}
+  food2: {fileID: 3837488405208403677, guid: 5f0cff10d777b6f488dc89867623ddd6, type: 3}
+  food3: {fileID: 4511653200961387578, guid: dbb1eda2436d70e429e70fb4f17cd2a5, type: 3}
+  width: 20
+  height: 20
+  waiters: []
+  binPosition: 0d00000000000000
 --- !u!1 &1712288050
 GameObject:
   m_ObjectHideFlags: 0
@@ -2616,7 +2616,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1712288050}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4f3184e618a1384b985f9fa4ef14732, type: 3}
+  m_Script: {fileID: 11500000, guid: b1976ffea1e25d649b91f608c82f3c6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1768519240
