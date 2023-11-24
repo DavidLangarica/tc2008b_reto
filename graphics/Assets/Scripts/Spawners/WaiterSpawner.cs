@@ -1,12 +1,12 @@
 /// <summary>
-/// The RobotSpawner class is responsible for spawning the robots.
+/// The WaiterSpawner class is responsible for spawning the waiters.
 /// </summary>
 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RobotSpawner : MonoBehaviour
+public class WaiterSpawner : MonoBehaviour
 {
     private GameManager gameManager;
 
@@ -20,26 +20,26 @@ public class RobotSpawner : MonoBehaviour
         {
             Debug.LogError("GameManager component not found.");
         } else {
-            SpawnRobots();
+            SpawnWaiters();
         }
     }
 
      /// <summary>
-    /// The SpawnRobots method is responsible for spawning the robots and setting their colors.
+    /// The SpawnWaiters method is responsible for spawning the waiters and setting their colors.
     /// </summary>
-    void SpawnRobots()
+    void SpawnWaiters()
     {
+        gameManager.initWaiters();
         int width = gameManager.width;
         int height = gameManager.height;
-        GameObject robotPrefab = gameManager.robotPrefab;
-        string[] robots = gameManager.robots;
+        GameObject waiterPrefab = gameManager.waiterPrefab;
+        Waiter[] waiters = gameManager.waiters;
         Random.InitState(System.DateTime.Now.Millisecond);
 
-
-        for (int i = 0; i < robots.Length; ++i)
+        for (int i = 0; i < waiters.Length; ++i)
         {
-            GameObject go = Instantiate(robotPrefab, new Vector3(Random.Range(0, width), 0.1f, Random.Range(0, height)), Quaternion.identity);
-            go.name = robots[i];
+            GameObject go = Instantiate(waiterPrefab, new Vector3(waiters[i].X, 0.1f, waiters[i].Y), Quaternion.identity);
+            go.name = waiters[i].id;
             go.transform.parent = transform;
 
             Transform sphere = go.transform.Find("Sphere");
@@ -71,7 +71,7 @@ public class RobotSpawner : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Sphere object not found within the robot prefab.");
+                Debug.LogError("Sphere object not found within the waiter prefab.");
             }
 
         }

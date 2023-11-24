@@ -69,7 +69,7 @@ public class PavimentSpawner : MonoBehaviour
                     }
                 }
 
-                Collider[] hitColliders = Physics.OverlapSphere(go.transform.position, 0.1f);
+                Collider[] hitColliders = Physics.OverlapSphere(go.transform.position, 10f);
                 foreach (var hitCollider in hitColliders)
                 {
                     if (hitCollider.gameObject.tag == "Tree")

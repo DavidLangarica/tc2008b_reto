@@ -1122,7 +1122,7 @@ GameObject:
   - component: {fileID: 706763288}
   - component: {fileID: 706763289}
   m_Layer: 0
-  m_Name: Robots
+  m_Name: Waiters
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2545,22 +2545,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pavimentPrefab: {fileID: 975759898283980419, guid: f1cb92187d4864347804e38179c663b2, type: 3}
-  robotPrefab: {fileID: 5003572191269885324, guid: 9661d2d29c2ee3945a041cb969cb980a, type: 3}
+  waiterPrefab: {fileID: 5003572191269885324, guid: 9661d2d29c2ee3945a041cb969cb980a, type: 3}
   treeA: {fileID: 4030317326967668591, guid: 5e32e717c4c37d5438d023ce784dee8f, type: 3}
   treeB: {fileID: 6274733261811916834, guid: 1029b653523023a4e8e6c8487dda6392, type: 3}
   binPrefab: {fileID: 937729550311980879, guid: ab56dded2a8a8094f8a7758b1bd6ab6f, type: 3}
   food1: {fileID: 4096414040807422423, guid: 9aee2c7a3c5844e4f8d8a8812104f9b6, type: 3}
   food2: {fileID: 3837488405208403677, guid: 5f0cff10d777b6f488dc89867623ddd6, type: 3}
   food3: {fileID: 4511653200961387578, guid: dbb1eda2436d70e429e70fb4f17cd2a5, type: 3}
-  binPosition: 000000000d000000
   width: 20
   height: 20
-  robots:
-  - robot-0
-  - robot-1
-  - robot-2
-  - robot-3
-  - robot-4
+  binPosition: 000000000d000000
 --- !u!4 &1608364827
 Transform:
   m_ObjectHideFlags: 0
