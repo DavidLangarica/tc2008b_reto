@@ -11,7 +11,7 @@ public class Food : MonoBehaviour
     [HideInInspector]
     public string id;
     [HideInInspector]
-    public int X;
+    public int X { get; set; }
     [HideInInspector]
-    public int Y;
+    public int Y { get; set; }
 }

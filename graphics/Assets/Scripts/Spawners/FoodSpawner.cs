@@ -9,7 +9,6 @@ using UnityEngine;
 public class FoodSpawner : MonoBehaviour
 {
     private GameManager gameManager;
-    public int totalFoodSpawned = 0;
     
     /// <summary>
     /// The Start method is called before the first frame update
@@ -20,54 +19,37 @@ public class FoodSpawner : MonoBehaviour
         if (gameManager == null)
         {
             Debug.LogError("GameManager component not found.");
-        } else {
-            StartCoroutine(SpawnFoodRoutine());
         }
     }
 
-    /// <summary>
-    /// The SpawnFoodRoutine method is responsible for spawning the food.
-    /// </summary>
-    IEnumerator SpawnFoodRoutine()
+    public void AddFood(string foodId, Vector3 position)
     {
-        while (totalFoodSpawned < 47)
+        if (!gameManager.spawnedFood.ContainsKey(foodId))
         {
-            SpawnFood();
-            yield return new WaitForSeconds(5);
+            SpawnFood(foodId, position);
         }
     }
+    
 
     /// <summary>
     /// The SpawnFood method is responsible for spawning the food.
     /// </summary>
-    void SpawnFood()
+    void SpawnFood(string foodId, Vector3 position)
     {
-        if (gameManager == null)
-        {
-            Debug.LogError("GameManager component not found.");
-            return;
-        }
+        int foodType = Random.Range(1, 4);
+        GameObject foodPrefab = foodType == 1 ? gameManager.food1 : foodType == 2 ? gameManager.food2 : gameManager.food3;
 
-        int foodToSpawn = Random.Range(2, 6);
-        for (int i = 0; i < foodToSpawn; i++)
-        {
-            int foodType = Random.Range(1, 4);
-            GameObject foodPrefab = foodType == 1 ? gameManager.food1 : foodType == 2 ? gameManager.food2 : gameManager.food3;
+        GameObject food = Instantiate(foodPrefab, position, Quaternion.identity);
+        food.name = foodId;
+        food.transform.parent = transform;
 
-            int x = Random.Range(0, gameManager.width);
-            int z = Random.Range(0, gameManager.height);
+        float x = position.x;
+        float z = position.z;
+        float y = foodType == 1 ? 0.7f : 0.15f;
 
-            Vector3 spawnPosition = new Vector3(x, 0, z);
+        food.transform.position = new Vector3(x, y, z);
+        food.transform.Rotate(0, Random.Range(0, 360), 0);
 
-            GameObject food = Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
-            food.transform.parent = transform;
-
-            float y = foodType == 1 ? 0.7f : 0.15f;
-
-            food.transform.position = new Vector3(x, y, z);
-            food.transform.Rotate(0, Random.Range(0, 360), 0);
-
-            totalFoodSpawned++;
-        }
+        gameManager.spawnedFood.Add(foodId, food);
     }
 }

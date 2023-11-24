@@ -11,13 +11,13 @@ public class Waiter : MonoBehaviour
     [HideInInspector]
     public string id;
     [HideInInspector]
-    public int CarryingFood;
+    public int CarryingFood { get; set; }
     [HideInInspector]
-    public int Step;
+    public int Step { get; set; }
     [HideInInspector]
-    public int X;
+    public int X { get; set; }
     [HideInInspector]
-    public int Y;
+    public int Y { get; set; }
 
     private bool outsideOfGrid = false;
     private GameManager gameManager;
@@ -27,24 +27,7 @@ public class Waiter : MonoBehaviour
     /// </summary>
     void Start(){
         gameManager = GetComponentInParent<GameManager>();
-        StartCoroutine(moveWaiterRoutine());
     }    
-
-    /// <summary>
-    /// The moveWaiterRoutine method is responsible for moving the waiter in each step.
-    /// </summary>
-    IEnumerator moveWaiterRoutine()
-    {
-        //  TODO: CHANGE VALIDATION
-        while (!outsideOfGrid)
-        {
-            yield return new WaitForSeconds(1);
-            float newX = transform.position.x;
-            float newY = transform.position.z + 1;
-            moveWaiter(newX, newY);
-            outsideOfGrid = transform.position.z >= gameManager.height - 1;
-        }
-    }
 
     /// <summary>
     /// The moveWaiter method is responsible for moving the waiter in each step.
@@ -69,15 +52,13 @@ public class Waiter : MonoBehaviour
     /// The pickFood method is responsible for picking up the food.
     /// </summary>
     public void pickFood(string foodId){
-        GameObject food = GameObject.FindWithTag(foodId);
-
+        GameObject food = GameObject.Find(foodId);
         food.transform.parent = transform;
         food.transform.position = new Vector3(transform.position.x, 0.7f, transform.position.z);
     }
 
     public void placeFood(string foodId){
-        GameObject food = GameObject.FindWithTag(foodId);
-        
+        GameObject food = GameObject.Find(foodId);
         Destroy(food);
     }
 }
