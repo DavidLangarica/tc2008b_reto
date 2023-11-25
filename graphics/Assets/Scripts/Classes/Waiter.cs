@@ -9,17 +9,31 @@ using UnityEngine;
 public class Waiter : MonoBehaviour
 {
     public Transform carryingPoint;
+    public int interpolationFramesCount = 45;
 
     [HideInInspector]
     public string id;
+
     [HideInInspector]
-    public int CarryingFood { get; set; }
+    public int CarryingFood;
+
     [HideInInspector]
-    public int Step { get; set; }
+    public int Step;
+
     [HideInInspector]
-    public int X { get; set; }
+    public int X;
+
     [HideInInspector]
-    public int Y { get; set; }
+    public int Y;
+
+    [HideInInspector]
+    public int newX;
+    
+    [HideInInspector]
+    public int newY;
+
+    [HideInInspector]
+    public Color mainColor;
 
     private GameObject foodCarried = null;
     private GameManager gameManager;
@@ -34,22 +48,57 @@ public class Waiter : MonoBehaviour
     }
 
     /// <summary>
+    /// The Update method is responsible for updating the waiter's position.
+    /// </summary>
+    void Update(){
+        bool changePositionX = transform.position.x != newX;
+        bool changePositionZ = transform.position.z != newY;
+
+        if ((changePositionX || changePositionZ) && gameManager.steps != 0){
+            moveWaiter(newX, newY);
+        }
+    }
+
+    /// <summary>
     /// The moveWaiter method is responsible for moving the waiter in each step.
     /// </summary>
     public void moveWaiter(float newX, float newY)
     {        
-        float timeToMove = 0.5f;
-        Vector3 startPosition = transform.position;
-        Vector3 endPosition = new Vector3(newX, 0, newY);
-        float elapsedTime = 0f;
+        Vector3 oldPosition = transform.position;
+        Vector3 newPosition = new Vector3(newX, 0, newY);
 
-        while (elapsedTime < timeToMove)
+        if (oldPosition.x > newPosition.x)
         {
-            transform.position = Vector3.Lerp(startPosition, endPosition, (elapsedTime / timeToMove));
-            elapsedTime += Time.deltaTime;
+            transform.rotation = Quaternion.Euler(0, 270, 0);
         }
-        transform.position = endPosition;
-        
+        else if (oldPosition.x < newPosition.x)
+        {
+            transform.rotation = Quaternion.Euler(0, 90, 0);
+        }
+        else if (oldPosition.z > newPosition.z)
+        {
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+        else if (oldPosition.z < newPosition.z)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+
+        StartCoroutine(animateWaiter(oldPosition, newPosition));
+    }
+
+    /// <summary>
+    /// The animateWaiter method is responsible for animating the waiter.
+    /// </summary>
+    IEnumerator animateWaiter(Vector3 oldPosition, Vector3 newPosition)
+    {
+        float interpolationRatio = 0;
+        while (interpolationRatio < 1)
+        {
+            interpolationRatio += 1f / interpolationFramesCount;
+            transform.position = Vector3.Lerp(oldPosition, newPosition, interpolationRatio);
+            yield return null;
+        }
     }
 
     /// <summary>
@@ -69,11 +118,25 @@ public class Waiter : MonoBehaviour
         }
     }
 
+    void activateEmission(){
+        Renderer renderer = GetComponentInChildren<Renderer>();
+        Material material = renderer.materials[0];
+        material.SetColor("_EmissionColor", mainColor * 1.5f);
+    }
+
+    void deactivateEmission(){
+        Renderer renderer = GetComponentInChildren<Renderer>();
+        Material material = renderer.materials[0];
+        material.SetColor("_EmissionColor", mainColor * 0);
+    }
+
     /// <summary>   
     /// The pickFood method is responsible for picking up the food.
     /// </summary>
     public void pickFood(GameObject food){
+        activateEmission();
         animator.SetFloat("Blend", 1f);
+
         foodCarried = food;
 
         food.GetComponent<Rigidbody>().isKinematic = true;
@@ -88,6 +151,7 @@ public class Waiter : MonoBehaviour
     /// The placeFood method is responsible for placing the food.
     /// </summary>
     public void placeFood(GameObject food){
+        deactivateEmission();
         foodCarried = null;
         Destroy(food);
         animator.SetFloat("Blend", 0f);

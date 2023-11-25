@@ -51,7 +51,7 @@ def step():
     return jsonify(
         {
             "isBinFound": bin_found_position,
-            "currenStep": current_step,
+            "currentStep": current_step,
             "Waiters": waiters_data,
             "Food": food_data,
         }

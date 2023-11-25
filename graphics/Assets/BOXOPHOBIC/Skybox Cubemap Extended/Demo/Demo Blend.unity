@@ -2110,13 +2110,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1480377163}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.9880945, z: -0.15384822, w: 0}
-  m_LocalPosition: {x: 8.9, y: 4.3, z: 25.68}
+  m_LocalRotation: {x: 0, y: 0.9906529, z: -0.13640721, w: 0}
+  m_LocalPosition: {x: 10, y: 5.9, z: 28}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 17.7, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 15.68, y: 180, z: 0}
 --- !u!45 &1480377169
 Skybox:
   m_ObjectHideFlags: 0
@@ -2563,6 +2563,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab91fa5f6a357f9449f180f3fc86a65e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stepUpdateTime: 1
+  foodUpdateTime: 5
   pavimentPrefab: {fileID: 975759898283980419, guid: f1cb92187d4864347804e38179c663b2, type: 3}
   waiterPrefab: {fileID: 5003572191269885324, guid: 9661d2d29c2ee3945a041cb969cb980a, type: 3}
   treeA: {fileID: 4030317326967668591, guid: 5e32e717c4c37d5438d023ce784dee8f, type: 3}
@@ -2573,6 +2575,7 @@ MonoBehaviour:
   food3: {fileID: 4511653200961387578, guid: dbb1eda2436d70e429e70fb4f17cd2a5, type: 3}
   width: 20
   height: 20
+  steps: 0
   waiters: []
   binPosition: 0d00000000000000
   isBinFound: 0

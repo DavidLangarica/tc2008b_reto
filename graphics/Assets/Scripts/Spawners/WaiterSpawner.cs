@@ -29,26 +29,10 @@ public class WaiterSpawner : MonoBehaviour
     {
         if (gameManager.spawnedWaiters.TryGetValue(waiterId, out GameObject waiterObject))
         {
-            if(newPosition.x > waiterObject.transform.position.x)
-            {
-                waiterObject.transform.rotation = Quaternion.Euler(0, 90, 0);
-            }
-            else if(newPosition.x < waiterObject.transform.position.x)
-            {
-                waiterObject.transform.rotation = Quaternion.Euler(0, 270, 0);
-            }
-            else if(newPosition.z > waiterObject.transform.position.z)
-            {
-                waiterObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-            else if(newPosition.z < waiterObject.transform.position.z)
-            {
-                waiterObject.transform.rotation = Quaternion.Euler(0, 180, 0);
-            }
-
             Waiter waiter = waiterObject.GetComponent<Waiter>();
             waiter.CarryingFood = carryingFood;
-            waiter.moveWaiter(newPosition.x, newPosition.z);
+            waiter.newX = (int)newPosition.x;
+            waiter.newY = (int)newPosition.z;
         }
         else
         {
@@ -86,9 +70,17 @@ public class WaiterSpawner : MonoBehaviour
                 float g = Random.Range(0.0f, 1.0f);
                 float b = Random.Range(0.0f, 1.0f);
 
-                bodyMaterial.color = new Color(r, g, b) * 0.7f;
-                eyesMaterial.color = new Color(r, g, b) * 0.3f;
-                extremitiesMaterial.color = new Color(r, g, b);                   
+                Color color = new Color(r, g, b);
+
+                Waiter waiter = go.GetComponent<Waiter>();
+                waiter.mainColor = color;
+
+                bodyMaterial.color = color * 0.7f;
+                eyesMaterial.color = color * 0.3f;
+                extremitiesMaterial.color = color;    
+
+                bodyMaterial.EnableKeyword("_EMISSION");
+                bodyMaterial.SetColor("_EmissionColor", color * 0);  
             }
             else
             {

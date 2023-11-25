@@ -60,18 +60,14 @@ public class PropsSpawner : MonoBehaviour
             bool treePlaced = false;
             while (!treePlaced)
             {
-                // Generar una posición aleatoria dentro de las dimensiones del terreno
                 float x = Random.Range(terrainBounds.min.x, terrainBounds.max.x);
                 float z = Random.Range(terrainBounds.min.z, terrainBounds.max.z);
-                Vector3 position = new Vector3(x, 100, z); // Poner Y muy alto para el raycast
+                Vector3 position = new Vector3(x, 100, z);
 
-                // Disparar un raycast hacia abajo para encontrar el terreno
                 if (Physics.Raycast(position, -Vector3.up, out RaycastHit hit, Mathf.Infinity))
                 {
-                    // Comprobar si el raycast golpea el terreno y no el pavimento
                     if (hit.collider.gameObject == terrainObject)
                     {
-                        // Colocar el árbol en la posición del hit, ajustando la altura
                         Vector3 treePosition = hit.point;
                         if (IsFarEnoughFromPaviment(treePosition, minDistanceFromPaviment))
                         {

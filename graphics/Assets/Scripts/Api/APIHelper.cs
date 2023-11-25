@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using UnityEditor;
 
 public static class APIHelper
 {
@@ -20,7 +21,7 @@ public static class APIHelper
         catch(HttpRequestException e)
         {
             Debug.Log($"Error fetching data: {e.Message}");
-            Application.Quit();
+            EditorApplication.isPlaying = false;
             return null;
         }
     }

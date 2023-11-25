@@ -5,10 +5,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
+    public float stepUpdateTime = 1f;
+    public float foodUpdateTime = 5f;
     public GameObject pavimentPrefab;
     public GameObject waiterPrefab;
     public GameObject treeA;
@@ -18,29 +21,29 @@ public class GameManager : MonoBehaviour
     public GameObject food2;
     public GameObject food3;
 
-    private int numWaiters = 5;
-
     [HideInInspector]
     public int width;
+
     [HideInInspector]
     public int height;
+
+    [HideInInspector]
+    public Dictionary<string, GameObject> spawnedWaiters = new Dictionary<string, GameObject>();
+
+    [HideInInspector]
+    public Dictionary<string, GameObject> spawnedFood = new Dictionary<string, GameObject>();
+
+    [HideInInspector]
+    public int steps = 0;
 
     [HideInInspector]
     public Waiter[] waiters;
 
     [HideInInspector]
-    public int[] binPosition = {13, 0};
+    public int[] binPosition = {0, 0};
 
     [HideInInspector]
     public bool isBinFound = false;
-
-    private float stepUpdateTime = 0.1f;
-    private float foodUpdateTime = 0.5f;
-
-    [HideInInspector]
-    public Dictionary<string, GameObject> spawnedWaiters = new Dictionary<string, GameObject>();
-    [HideInInspector]
-    public Dictionary<string, GameObject> spawnedFood = new Dictionary<string, GameObject>();
 
     /// <summary>
     /// Start is called before the first frame update
@@ -71,7 +74,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.LogError("Error loading data");
-            Application.Quit();
+            EditorApplication.isPlaying = false;
         }
     }
 
@@ -93,11 +96,17 @@ public class GameManager : MonoBehaviour
         height = gridData.Height;
     }
 
+    /// <summary>
+    /// The UpdateSteps method is responsible for updating the steps.
+    /// </summary>
     private void UpdateSteps()
     {
         StartCoroutine(UpdateStepsCoroutine());
     }
 
+    /// <summary>
+    /// The UpdateStepsCoroutine method is responsible for updating the steps.
+    /// </summary>
     private IEnumerator UpdateStepsCoroutine()
     {
         Task<string> stepDataTask = APIHelper.FetchDataFromAPI("http://127.0.0.1:5000/step");
@@ -111,23 +120,30 @@ public class GameManager : MonoBehaviour
             UpdateBinFoundPosition(stepState.isBinFound);
             UpdateWaiters(stepState.Waiters);
             UpdateFood(stepState.Food);
-            setSimulationState(stepState.currentStep);
+            setSimulationState(stepState.currentStep, stepState.Food.Count);
         }
         else
         {
             Debug.LogError("Error loading step data");
-            Application.Quit();
+            EditorApplication.isPlaying = false;
         }
     }
 
-    private void setSimulationState(int currentStep)
+    /// <summary>
+    /// The setSimulationState method is responsible for setting the simulation state.
+    /// </summary>
+    private void setSimulationState(int currentStep, int foodCount)
     {
-        if (currentStep > 0 && spawnedFood.Count == 0)
+        steps = currentStep;
+        if (currentStep > 0 && foodCount == 0)
         {
-            Application.Quit();
+            EditorApplication.isPlaying = false;
         }
     }
 
+    /// <summary>
+    /// The UpdateBinFoundPosition method is responsible for updating the bin found position state.
+    /// </summary>
     private void UpdateBinFoundPosition(bool isBinFoundData)
     {
         if (isBinFoundData)
@@ -136,7 +152,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void UpdateWaiters(Dictionary<string, Waiter[]> waiters)
+    /// <summary>
+    /// The UpdateWaiters method is responsible for updating the waiters.
+    /// </summary>
+    private void UpdateWaiters(Dictionary<string, WaiterModel[]> waiters)
     {
         foreach (var waiterGroup in waiters)
         {
@@ -149,11 +168,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// The GenerateFood method is responsible for generating the food.
+    /// </summary>
     private void GenerateFood()
     {
         StartCoroutine(GenerateFoodCoroutine());
     }
 
+    /// <summary>
+    /// The GenerateFoodCoroutine method is responsible for generating the food.
+    /// </summary>
     private IEnumerator GenerateFoodCoroutine()
     {
         Task foodGenerationTask = TriggerFoodGeneration();
@@ -162,16 +187,22 @@ public class GameManager : MonoBehaviour
         if (foodGenerationTask.Status != TaskStatus.RanToCompletion)
         {
             Debug.LogError("Error generating food");
-            Application.Quit();
+            EditorApplication.isPlaying = false;
         }
     }
 
+    /// <summary>
+    /// The TriggerFoodGeneration method is responsible for triggering the food generation.
+    /// </summary>
     private async Task TriggerFoodGeneration()
     {
         await APIHelper.FetchDataFromAPI("http://127.0.0.1:5000/food");
     }
 
-    private void UpdateFood(Dictionary<string, Food> foods)
+    /// <summary>
+    /// The UpdateFood method is responsible for updating the food.
+    /// </summary>
+    private void UpdateFood(Dictionary<string, FoodModel> foods)
     {
         foreach (var foodItem in foods)
         {
