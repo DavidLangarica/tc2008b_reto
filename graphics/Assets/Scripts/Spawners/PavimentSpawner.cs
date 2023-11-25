@@ -9,7 +9,6 @@ using UnityEngine;
 public class PavimentSpawner : MonoBehaviour
 {    
     private GameManager gameManager;
-
     /// <summary>
     /// Start is called before the first frame update
     /// </summary>
@@ -19,15 +18,13 @@ public class PavimentSpawner : MonoBehaviour
          if (gameManager == null)
         {
             Debug.LogError("GameManager component not found.");
-        } else {
-            SpawnPaviment();
         }
     }
 
     /// <summary>
     /// The SpawnPaviment method is responsible for spawning the paviment.
     /// </summary>
-    void SpawnPaviment()
+    public void SpawnPaviment()
     {
         int width = gameManager.width;
         int height = gameManager.height;
@@ -69,7 +66,7 @@ public class PavimentSpawner : MonoBehaviour
                     }
                 }
 
-                Collider[] hitColliders = Physics.OverlapSphere(go.transform.position, 0.1f);
+                Collider[] hitColliders = Physics.OverlapSphere(go.transform.position, 10f);
                 foreach (var hitCollider in hitColliders)
                 {
                     if (hitCollider.gameObject.tag == "Tree")

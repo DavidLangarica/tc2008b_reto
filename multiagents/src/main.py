@@ -71,6 +71,9 @@ def get_food_information(all_data, step):
 
     return food_info
 
+def get_bin_found_position(all_data, step):
+    bin_found_position = all_data["isBinFound"][step]
+    return bin_found_position != None
 
 def get_data(model: Restaurant):
     all_data = model.datacollector.get_model_vars_dataframe()
@@ -91,10 +94,13 @@ def get_data(model: Restaurant):
 
     # ---------- Waiters information ----------
     waiters_info = get_waiters_information(all_data)
-    print(waiters_info)
 
     # ---------- Food information ----------
     food_info = get_food_information(all_data)
+    
+    # ---------- Bin found position ----------
+    bin_found_position = get_bin_found_position(all_data)
+    
     return {
         "NumSteps": num_steps,
         "GridSize": grid_size,
@@ -102,6 +108,7 @@ def get_data(model: Restaurant):
         "NumWaiters": num_waiters,
         "WaitersInfo": waiters_info,
         "FoodInfo": food_info,
+        "isBinFound": bin_found_position,
     }
 
 
