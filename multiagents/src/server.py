@@ -3,12 +3,16 @@ from Restaurant import Restaurant
 from main import *
 
 app = Flask(__name__)
-model = Restaurant(20, 20, 5, 47)
+model = None  # Declare the model variable globally
 
+def initialize_model():
+    global model
+    model = Restaurant(20, 20, 5, 47)
+    model.step()
 
 @app.route("/init", methods=["GET"])
 def init():
-    model.step()
+    initialize_model()
     model_data = model.datacollector.get_model_vars_dataframe()
 
     # GRID INIT
@@ -37,9 +41,12 @@ def init():
         }
     )
 
-
 @app.route("/step", methods=["GET"])
 def step():
+    global model
+    if model is None:
+        initialize_model()
+
     model.step()
     model_data = model.datacollector.get_model_vars_dataframe()
     current_step = len(model_data) - 1
@@ -55,12 +62,14 @@ def step():
         }
     )
 
-
 @app.route("/food", methods=["GET"])
 def generate_food():
+    global model
+    if model is None:
+        initialize_model()
+
     model.create_foods()  # Make sure this method exists in your model
     return jsonify({"message": "Food generated successfully"})
-
 
 if __name__ == "__main__":
     app.run(debug=True)

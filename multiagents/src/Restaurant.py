@@ -71,7 +71,7 @@ def track_food_picking(model):
 
 class Restaurant(Model):
     def __init__(self, width, height, num_waiters, num_foods):
-        self.random.seed(12345)
+        random.seed(12345)
         self.num_waiters = num_waiters
         self.num_foods = num_foods
         self.total_food = num_foods
@@ -100,7 +100,6 @@ class Restaurant(Model):
 
         self.create_waiters()
         self.create_bin()
-        self.create_foods()
 
     def random_position(self):
         x = random.randrange(self.grid.width)
@@ -115,6 +114,7 @@ class Restaurant(Model):
         self.grid.place_agent(bin, (x, y))
 
     def create_foods(self):
+        random.seed(12345)
         food_unit = random.randint(2, 5)
 
         if food_unit > self.num_foods:
@@ -133,14 +133,15 @@ class Restaurant(Model):
         self.num_foods -= food_unit
 
     def create_waiters(self):
+        random.seed(12345)
         self.column_width = self.grid.width // self.num_waiters
         column = 0
         for i in range(self.num_waiters):
             waiter_id = "waiter-" + str(i)
             while True:
-                x = self.random.randrange(column, column + self.column_width - 1)
+                x = random.randrange(column, column + self.column_width - 1)
                 x_range = (column, column + self.column_width - 1)
-                y = self.random.randrange(self.grid.height)
+                y = random.randrange(self.grid.height)
                 if self.grid.is_cell_empty((x, y)):
                     waiter = Waiter(waiter_id, self, x_range)
                     self.schedule.add(waiter)

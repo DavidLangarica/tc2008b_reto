@@ -54,7 +54,6 @@ def get_waiters_information(all_data, step):
 
         waiters_data[waiter_id].append(
             {
-                "Step": i,
                 "X": waiter_x,
                 "Y": waiter_y,
                 "CarryingFood": waiter_carrying,
