@@ -7,7 +7,7 @@ model = None  # Declare the model variable globally
 
 def initialize_model():
     global model
-    model = Restaurant(20, 20, 5, 47)
+    model = Restaurant(10, 10, 5, 20)
     model.step()
 
 @app.route("/init", methods=["GET"])
@@ -47,20 +47,23 @@ def step():
     if model is None:
         initialize_model()
 
-    model.step()
-    model_data = model.datacollector.get_model_vars_dataframe()
-    current_step = len(model_data) - 1
-    waiters_data = get_waiters_information(model_data, current_step)
-    food_data = get_food_information(model_data, current_step)
+    if model.is_running:
+        model.step()
+        model_data = model.datacollector.get_model_vars_dataframe()
+        current_step = len(model_data) - 1
+        waiters_data = get_waiters_information(model_data, current_step)
+        food_data = get_food_information(model_data, current_step)
 
-    # Return
-    return jsonify(
-        {
-            "current_step": current_step,
-            "Waiters": waiters_data,
-            "Food": food_data,
-        }
-    )
+        # Return
+        return jsonify(
+            {
+                "current_step": current_step,
+                "Waiters": waiters_data,
+                "Food": food_data,
+            }
+        )
+    else:
+        return jsonify({"message": "Model is done"})
 
 @app.route("/food", methods=["GET"])
 def generate_food():
