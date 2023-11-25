@@ -14,4 +14,10 @@ public class Food : MonoBehaviour
     public int X { get; set; }
     [HideInInspector]
     public int Y { get; set; }
+
+    void OnTriggerEnter(Collider other)
+    {
+        GameObject collidedObject = other.gameObject;
+        string collidedObjectName = collidedObject.name;
+    }
 }

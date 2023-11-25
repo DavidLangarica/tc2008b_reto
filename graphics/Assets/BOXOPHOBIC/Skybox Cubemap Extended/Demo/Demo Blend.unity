@@ -2110,13 +2110,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1480377163}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.014324265, y: 0.9792869, z: 0.0747568, w: 0.18762589}
-  m_LocalPosition: {x: -5.54, y: 0.49, z: 10.32}
+  m_LocalRotation: {x: 0, y: 0.9880945, z: -0.15384822, w: 0}
+  m_LocalPosition: {x: 8.9, y: 4.3, z: 25.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -14.344001, y: 183.62099, z: 2.6130002}
+  m_LocalEulerAnglesHint: {x: 17.7, y: 180, z: 0}
 --- !u!45 &1480377169
 Skybox:
   m_ObjectHideFlags: 0
@@ -2568,13 +2568,14 @@ MonoBehaviour:
   treeA: {fileID: 4030317326967668591, guid: 5e32e717c4c37d5438d023ce784dee8f, type: 3}
   treeB: {fileID: 6274733261811916834, guid: 1029b653523023a4e8e6c8487dda6392, type: 3}
   binPrefab: {fileID: 937729550311980879, guid: ab56dded2a8a8094f8a7758b1bd6ab6f, type: 3}
-  food1: {fileID: 4096414040807422423, guid: 9aee2c7a3c5844e4f8d8a8812104f9b6, type: 3}
+  food1: {fileID: 4342842815420005410, guid: 9aee2c7a3c5844e4f8d8a8812104f9b6, type: 3}
   food2: {fileID: 3837488405208403677, guid: 5f0cff10d777b6f488dc89867623ddd6, type: 3}
   food3: {fileID: 4511653200961387578, guid: dbb1eda2436d70e429e70fb4f17cd2a5, type: 3}
   width: 20
   height: 20
   waiters: []
   binPosition: 0d00000000000000
+  isBinFound: 0
 --- !u!1 &1712288050
 GameObject:
   m_ObjectHideFlags: 0

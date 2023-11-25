@@ -45,11 +45,13 @@ def step():
     current_step = len(model_data) - 1
     waiters_data = get_waiters_information(model_data, current_step)
     food_data = get_food_information(model_data, current_step)
+    bin_found_position = get_bin_found_position(model_data, current_step)
 
     # Return
     return jsonify(
         {
-            "current_step": current_step,
+            "isBinFound": bin_found_position,
+            "currenStep": current_step,
             "Waiters": waiters_data,
             "Food": food_data,
         }

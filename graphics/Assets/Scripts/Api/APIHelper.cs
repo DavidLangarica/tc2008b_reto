@@ -20,6 +20,7 @@ public static class APIHelper
         catch(HttpRequestException e)
         {
             Debug.Log($"Error fetching data: {e.Message}");
+            Application.Quit();
             return null;
         }
     }

@@ -25,11 +25,30 @@ public class WaiterSpawner : MonoBehaviour
      /// <summary>
     /// The ManageWaiters method is responsible for spawning the waiters and setting their colors.
     /// </summary>
-    public void ManageWaiters(string waiterId, Vector3 newPosition)
+    public void ManageWaiters(string waiterId, Vector3 newPosition, int carryingFood)
     {
         if (gameManager.spawnedWaiters.TryGetValue(waiterId, out GameObject waiterObject))
         {
-            waiterObject.transform.position = newPosition;
+            if(newPosition.x > waiterObject.transform.position.x)
+            {
+                waiterObject.transform.rotation = Quaternion.Euler(0, 90, 0);
+            }
+            else if(newPosition.x < waiterObject.transform.position.x)
+            {
+                waiterObject.transform.rotation = Quaternion.Euler(0, 270, 0);
+            }
+            else if(newPosition.z > waiterObject.transform.position.z)
+            {
+                waiterObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else if(newPosition.z < waiterObject.transform.position.z)
+            {
+                waiterObject.transform.rotation = Quaternion.Euler(0, 180, 0);
+            }
+
+            Waiter waiter = waiterObject.GetComponent<Waiter>();
+            waiter.CarryingFood = carryingFood;
+            waiter.moveWaiter(newPosition.x, newPosition.z);
         }
         else
         {
@@ -37,10 +56,14 @@ public class WaiterSpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// The initWaiter method is responsible for initializing the waiter.
+    /// </summary>
     void initWaiter(string waiterId, Vector3 newPosition)
     {
         GameObject waiterPrefab = gameManager.waiterPrefab;
         GameObject go = Instantiate(waiterPrefab, newPosition, Quaternion.identity);
+        go.name = waiterId;
         go.transform.parent = transform;
 
         gameManager.spawnedWaiters.Add(waiterId, go);

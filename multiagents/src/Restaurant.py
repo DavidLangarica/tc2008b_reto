@@ -85,6 +85,7 @@ class Restaurant(Model):
                 "NumWaiters": lambda x: num_waiters,
                 "Waiters": get_waiter_position,
                 "FoodPicking": track_food_picking,
+                "isBinFound": lambda x: x.bin_position,
             }
         )
 

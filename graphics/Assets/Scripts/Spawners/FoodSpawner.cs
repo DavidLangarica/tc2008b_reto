@@ -45,7 +45,7 @@ public class FoodSpawner : MonoBehaviour
 
         float x = position.x;
         float z = position.z;
-        float y = foodType == 1 ? 0.7f : 0.15f;
+        float y = 0.15f;
 
         food.transform.position = new Vector3(x, y, z);
         food.transform.Rotate(0, Random.Range(0, 360), 0);

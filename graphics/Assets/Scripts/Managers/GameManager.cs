@@ -31,8 +31,11 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public int[] binPosition = {13, 0};
 
-    private float stepUpdateTime = 1.0f;
-    private float foodUpdateTime = 5.0f;
+    [HideInInspector]
+    public bool isBinFound = false;
+
+    private float stepUpdateTime = 0.1f;
+    private float foodUpdateTime = 0.5f;
 
     [HideInInspector]
     public Dictionary<string, GameObject> spawnedWaiters = new Dictionary<string, GameObject>();
@@ -42,13 +45,12 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Start is called before the first frame update
     /// </summary>
-    private void Start()
+    void Start()
     {
         StartCoroutine(InitializeGame());
         InvokeRepeating(nameof(UpdateSteps), 0, stepUpdateTime);
         InvokeRepeating(nameof(GenerateFood), 0, foodUpdateTime);
     }
-
     
     /// <summary>
     /// The InitializeGame method is responsible for initializing the game.
@@ -69,6 +71,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.LogError("Error loading data");
+            Application.Quit();
         }
     }
 
@@ -105,12 +108,31 @@ public class GameManager : MonoBehaviour
             string stepData = stepDataTask.Result;
             GameState stepState = APIHelper.ParseJsonToGameState(stepData);
 
+            UpdateBinFoundPosition(stepState.isBinFound);
             UpdateWaiters(stepState.Waiters);
             UpdateFood(stepState.Food);
+            setSimulationState(stepState.currentStep);
         }
         else
         {
             Debug.LogError("Error loading step data");
+            Application.Quit();
+        }
+    }
+
+    private void setSimulationState(int currentStep)
+    {
+        if (currentStep > 0 && spawnedFood.Count == 0)
+        {
+            Application.Quit();
+        }
+    }
+
+    private void UpdateBinFoundPosition(bool isBinFoundData)
+    {
+        if (isBinFoundData)
+        {
+            isBinFound = isBinFoundData;
         }
     }
 
@@ -122,7 +144,7 @@ public class GameManager : MonoBehaviour
             {
                 WaiterSpawner waiterSpawner = GetComponentInChildren<WaiterSpawner>();
                 Vector3 newPosition = new Vector3(waiter.X, 0, waiter.Y);
-                waiterSpawner.ManageWaiters(waiterGroup.Key, newPosition);
+                waiterSpawner.ManageWaiters(waiterGroup.Key, newPosition, waiter.CarryingFood);
             }
         }
     }
@@ -136,6 +158,12 @@ public class GameManager : MonoBehaviour
     {
         Task foodGenerationTask = TriggerFoodGeneration();
         yield return new WaitUntil(() => foodGenerationTask.IsCompleted);
+
+        if (foodGenerationTask.Status != TaskStatus.RanToCompletion)
+        {
+            Debug.LogError("Error generating food");
+            Application.Quit();
+        }
     }
 
     private async Task TriggerFoodGeneration()
