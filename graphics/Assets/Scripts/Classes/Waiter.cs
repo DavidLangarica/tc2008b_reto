@@ -65,7 +65,7 @@ public class Waiter : MonoBehaviour
     public void moveWaiter(float newX, float newY)
     {        
         Vector3 oldPosition = transform.position;
-        Vector3 newPosition = new Vector3(newX, 0, newY);
+        Vector3 newPosition = new Vector3(newX, 0.1f, newY);
 
         if (oldPosition.x > newPosition.x)
         {

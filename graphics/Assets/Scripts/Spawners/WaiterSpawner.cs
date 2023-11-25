@@ -46,6 +46,7 @@ public class WaiterSpawner : MonoBehaviour
     void initWaiter(string waiterId, Vector3 newPosition)
     {
         GameObject waiterPrefab = gameManager.waiterPrefab;
+
         GameObject go = Instantiate(waiterPrefab, newPosition, Quaternion.identity);
         go.name = waiterId;
         go.transform.parent = transform;
