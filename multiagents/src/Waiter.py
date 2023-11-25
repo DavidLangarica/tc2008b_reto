@@ -26,6 +26,13 @@ class Waiter(Agent):
             self.move_to_target(self.model.bin_position)
         else:
             self.search_food()
+            
+    def is_cell_available(self, position):
+        # Verificar si la celda está disponible (sin otros agentes Waiter).
+        return not any(
+            isinstance(agent, Waiter)
+            for agent in self.model.grid.get_cell_list_contents(position)
+        )
 
     def search_routine(self):
         # Moverse en el eje X
@@ -131,12 +138,7 @@ class Waiter(Agent):
         )
 
         possible_steps = [
-            step
-            for step in possible_steps
-            if not any(
-                isinstance(agent, Waiter)
-                for agent in self.model.grid.get_cell_list_contents(step)
-            )
+            step for step in possible_steps if self.is_cell_available(step)
         ]
 
         best_step = min(
