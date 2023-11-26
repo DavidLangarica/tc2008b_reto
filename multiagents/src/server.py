@@ -1,13 +1,14 @@
 from flask import Flask, jsonify
 from Restaurant import Restaurant
 from main import *
+from constants import *
 
 app = Flask(__name__)
-model = None  # Declare the model variable globally
+model = None 
 
 def initialize_model():
     global model
-    model = Restaurant(10, 10, 5, 20)
+    model = Restaurant(WIDTH, HEIGHT, NUM_WAITERS, NUM_FOODS)
     model.step()
 
 @app.route("/init", methods=["GET"])
@@ -47,23 +48,24 @@ def step():
     if model is None:
         initialize_model()
 
-    if model.is_running:
-        model.step()
-        model_data = model.datacollector.get_model_vars_dataframe()
-        current_step = len(model_data) - 1
-        waiters_data = get_waiters_information(model_data, current_step)
-        food_data = get_food_information(model_data, current_step)
+    model.step()
+    model_data = model.datacollector.get_model_vars_dataframe()
+    current_step = len(model_data) - 1
+    waiters_data = get_waiters_information(model_data, current_step)
+    food_data = get_food_information(model_data, current_step)
+    is_bin_found = get_bin_found_position(model_data, current_step)
+    model_is_running = model.is_running
 
-        # Return
-        return jsonify(
-            {
-                "current_step": current_step,
-                "Waiters": waiters_data,
-                "Food": food_data,
-            }
-        )
-    else:
-        return jsonify({"message": "Model is done"})
+    # Return
+    return jsonify(
+        {
+            "currentStep": current_step,
+            "Waiters": waiters_data,
+            "Food": food_data,
+            "isBinFound": is_bin_found,
+            "modelIsRunning": model_is_running,
+        }
+    )
 
 @app.route("/food", methods=["GET"])
 def generate_food():

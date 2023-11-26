@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Threading.Tasks;
+using TMPro;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public float stepUpdateTime = 1f;
-    public float foodUpdateTime = 5f;
     public GameObject pavimentPrefab;
     public GameObject waiterPrefab;
     public GameObject treeA;
@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     public GameObject food1;
     public GameObject food2;
     public GameObject food3;
+    public TextMeshProUGUI stepCounter;
+    public TextMeshProUGUI simulationComplete;
 
     [HideInInspector]
     public int width;
@@ -39,45 +41,23 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public Waiter[] waiters;
 
-    [HideInInspector]
-    public int[] binPosition = {0, 0};
 
     [HideInInspector]
     public bool isBinFound = false;
+
+    private Bin bin;
+    private float stepUpdateTime = 1f;
+    private float foodUpdateTime = 5f;
 
     /// <summary>
     /// Start is called before the first frame update
     /// </summary>
     void Start()
     {
+        simulationComplete.gameObject.SetActive(false);
         StartCoroutine(InitializeGame());
-        InvokeRepeating(nameof(UpdateSteps), 0, stepUpdateTime);
-        InvokeRepeating(nameof(GenerateFood), 0, foodUpdateTime);
     }
     
-    /// <summary>
-    /// The InitializeGame method is responsible for initializing the game.
-    /// </summary>
-    private IEnumerator InitializeGame()
-    {
-        Task<GameState> loadDataTask = LoadDataAsync();
-        yield return new WaitUntil(() => loadDataTask.IsCompleted);
-
-        if (loadDataTask.Status == TaskStatus.RanToCompletion)
-        {
-            GameState gameState = loadDataTask.Result;
-            setGridAttributes(gameState.Grid);
-
-            PavimentSpawner pavimentSpawner = GetComponentInChildren<PavimentSpawner>();
-            pavimentSpawner.SpawnPaviment();
-        }
-        else
-        {
-            Debug.LogError("Error loading data");
-            EditorApplication.isPlaying = false;
-        }
-    }
-
     /// <summary>
     /// The LoadDataAsync method is responsible for loading the data from the API.
     /// </summary>
@@ -94,6 +74,72 @@ public class GameManager : MonoBehaviour
     {
         width = gridData.Width;
         height = gridData.Height;
+    }
+    
+    /// <summary>
+    /// The InitializeGame method is responsible for initializing the game.
+    /// </summary>
+    private IEnumerator InitializeGame()
+    {
+        Task<GameState> loadDataTask = LoadDataAsync();
+        yield return new WaitUntil(() => loadDataTask.IsCompleted);
+
+        if (loadDataTask.Status == TaskStatus.RanToCompletion)
+        {
+            GameState gameState = loadDataTask.Result;
+            setGridAttributes(gameState.Grid);
+
+            PavimentSpawner pavimentSpawner = GetComponentInChildren<PavimentSpawner>();
+            pavimentSpawner.SpawnPaviment(gameState.Bin);
+
+            BinSpawner binSpawner = GetComponentInChildren<BinSpawner>();
+            binSpawner.SpawnBin(gameState.Bin);
+
+            steps = 0;
+
+            InvokeRepeating(nameof(UpdateSteps), 0, stepUpdateTime);
+            InvokeRepeating(nameof(GenerateFood), 0, foodUpdateTime);
+        }
+        else
+        {
+            Debug.LogError("Error loading data");
+            EditorApplication.isPlaying = false;
+        }
+    }
+
+    /// <summary>
+    /// The UpdateUpdateTimes method is responsible for updating the step and food update time.
+    /// </summary>
+    public void UpdateUpdateTimes(float newStepTime, float newFoodTime)
+    {
+        stepUpdateTime = newStepTime;
+        foodUpdateTime = newFoodTime;
+        UpdateWaiterSpeed(newStepTime);
+        RestartInvocations();
+    }
+
+    /// <summary>
+    /// The UpdateWaiterSpeed method is responsible for updating the waiter speed.
+    /// </summary>
+    public void UpdateWaiterSpeed(float newStepTime)
+    {
+        foreach (var waiter in waiters)
+        {
+            Waiter waiterObject = waiter.GetComponent<Waiter>();
+            waiterObject.AdjustInterpolationFrames(newStepTime);
+        }
+    }
+
+    /// <summary>
+    /// The RestartInvocations method is responsible for restarting the invocations.
+    /// </summary>
+    private void RestartInvocations()
+    {
+        CancelInvoke(nameof(UpdateSteps));
+        CancelInvoke(nameof(GenerateFood));
+
+        InvokeRepeating(nameof(UpdateSteps), 0, stepUpdateTime);
+        InvokeRepeating(nameof(GenerateFood), 0, foodUpdateTime);
     }
 
     /// <summary>
@@ -117,10 +163,21 @@ public class GameManager : MonoBehaviour
             string stepData = stepDataTask.Result;
             GameState stepState = APIHelper.ParseJsonToGameState(stepData);
 
-            UpdateBinFoundPosition(stepState.isBinFound);
-            UpdateWaiters(stepState.Waiters);
-            UpdateFood(stepState.Food);
-            setSimulationState(stepState.currentStep, stepState.Food.Count);
+            if (stepState.modelIsRunning)
+            {
+                steps = stepState.currentStep;
+                stepCounter.text = "Step: " + steps.ToString();
+
+                UpdateBinFoundPosition(stepState.isBinFound);
+                UpdateWaiters(stepState.Waiters);
+                UpdateFood(stepState.Food);
+            }
+            else {
+                simulationComplete.gameObject.SetActive(true);
+                CancelInvoke(nameof(UpdateSteps));
+                CancelInvoke(nameof(GenerateFood));
+            }
+
         }
         else
         {
@@ -130,16 +187,12 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// The setSimulationState method is responsible for setting the simulation state.
+    /// The endSimulation method is responsible for ending the simulation.
     /// </summary>
-    private void setSimulationState(int currentStep, int foodCount)
+    void endSimulation()
     {
-        steps = currentStep;
-        if (currentStep > 0 && foodCount == 0)
-        {
-            EditorApplication.isPlaying = false;
-        }
-    }
+        EditorApplication.isPlaying = false;
+    }   
 
     /// <summary>
     /// The UpdateBinFoundPosition method is responsible for updating the bin found position state.

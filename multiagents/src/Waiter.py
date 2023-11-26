@@ -1,12 +1,12 @@
 from mesa import Agent
 from Bin import Bin
 from Food import Food
-
+from constants import SEED
 
 class Waiter(Agent):
     def __init__(self, unique_id, model, x_range):
         super().__init__(unique_id, model)
-        self.random.seed(12345)
+        self.random.seed(SEED)
         self.x_range = x_range
         self.carrying_food = False
         self.in_column = True
@@ -26,13 +26,6 @@ class Waiter(Agent):
             self.move_to_target(self.model.bin_position)
         else:
             self.search_food()
-            
-    def is_cell_available(self, position):
-        # Verificar si la celda está disponible (sin otros agentes Waiter).
-        return not any(
-            isinstance(agent, Waiter)
-            for agent in self.model.grid.get_cell_list_contents(position)
-        )
 
     def search_routine(self):
         # Moverse en el eje X
@@ -138,7 +131,12 @@ class Waiter(Agent):
         )
 
         possible_steps = [
-            step for step in possible_steps if self.is_cell_available(step)
+            step
+            for step in possible_steps
+            if not any(
+                isinstance(agent, Waiter)
+                for agent in self.model.grid.get_cell_list_contents(step)
+            )
         ]
 
         best_step = min(

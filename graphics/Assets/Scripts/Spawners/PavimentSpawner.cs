@@ -24,12 +24,12 @@ public class PavimentSpawner : MonoBehaviour
     /// <summary>
     /// The SpawnPaviment method is responsible for spawning the paviment.
     /// </summary>
-    public void SpawnPaviment()
+    public void SpawnPaviment(Bin bin)
     {
         int width = gameManager.width;
         int height = gameManager.height;
-        int binPositionX = gameManager.binPosition[0];
-        int binPositionZ = gameManager.binPosition[1];
+        int binPositionX = bin.X;
+        int binPositionZ = bin.Y;
         GameObject pavimentPrefab = gameManager.pavimentPrefab;
         
         for (int i = 0; i < width; ++i)

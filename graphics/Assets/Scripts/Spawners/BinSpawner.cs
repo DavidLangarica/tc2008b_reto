@@ -19,22 +19,20 @@ public class BinSpawner : MonoBehaviour
          if (gameManager == null)
         {
             Debug.LogError("GameManager component not found.");
-        } else {
-            SpawnBin();
         }
     }
 
     /// <summary>
     /// The SpawnBin method is responsible for spawning the Bin.
     /// </summary>
-    void SpawnBin()
+    public void SpawnBin(Bin bin)
     {
-        int binX = gameManager.binPosition[0];
-        int binZ = gameManager.binPosition[1];
+        int binX = bin.X;
+        int binZ = bin.Y;
 
-        GameObject bin = Instantiate(gameManager.binPrefab, new Vector3(binX, 0, binZ), Quaternion.identity);
-        bin.transform.position = new Vector3(binX, 38.5f, binZ);
-        bin.transform.parent = transform;
+        GameObject go = Instantiate(gameManager.binPrefab, new Vector3(binX, 0, binZ), Quaternion.identity);
+        go.transform.position = new Vector3(binX, 38.5f, binZ);
+        go.transform.parent = transform;
     }
 
 

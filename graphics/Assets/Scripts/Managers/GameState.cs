@@ -8,4 +8,5 @@ public class GameState
     public Dictionary<string, WaiterModel[]> Waiters { get; set; }
     public bool isBinFound { get; set; }
     public int currentStep { get; set; }
+    public bool modelIsRunning { get; set; }
 }

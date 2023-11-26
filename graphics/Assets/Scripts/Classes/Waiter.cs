@@ -9,7 +9,7 @@ using UnityEngine;
 public class Waiter : MonoBehaviour
 {
     public Transform carryingPoint;
-    public int interpolationFramesCount = 45;
+    public int interpolationFramesCount = 60;
 
     [HideInInspector]
     public string id;
@@ -57,6 +57,15 @@ public class Waiter : MonoBehaviour
         if ((changePositionX || changePositionZ) && gameManager.steps != 0){
             moveWaiter(newX, newY);
         }
+    }
+
+    /// <summary>
+    /// The AdjustInterpolationFrames method is responsible for adjusting the interpolation frames.
+    /// </summary>
+    public void AdjustInterpolationFrames(float newStepTime)
+    {
+        float baseStepTime = 1f;
+        interpolationFramesCount = (int)(interpolationFramesCount * (baseStepTime / newStepTime));
     }
 
     /// <summary>

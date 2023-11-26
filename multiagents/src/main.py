@@ -1,18 +1,8 @@
 from Restaurant import Restaurant
-import pandas as pd
 import random
-import json
+from constants import *
 
-random.seed(12345)
-
-# CONSTANTS
-WIDTH = 20
-HEIGHT = 20
-NUM_WAITERS = 5
-NUM_FOODS = 47
-STEP_TIME = 0.001
-FOOD_TIME = 0.005
-
+random.seed(SEED)
 
 def run_simulation():
     model = Restaurant(WIDTH, HEIGHT, NUM_WAITERS, NUM_FOODS)

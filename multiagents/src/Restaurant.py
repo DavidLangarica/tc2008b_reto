@@ -5,11 +5,12 @@ from mesa.datacollection import DataCollector
 from Waiter import Waiter
 from Bin import Bin
 from Food import Food
+from constants import SEED
 import random
 import numpy as np
 import time
 
-random.seed(12345)
+random.seed(SEED)
 
 
 def get_grid_size(model):
@@ -71,7 +72,7 @@ def track_food_picking(model):
 
 class Restaurant(Model):
     def __init__(self, width, height, num_waiters, num_foods):
-        random.seed(12345)
+        random.seed(SEED)
         self.num_waiters = num_waiters
         self.num_foods = num_foods
         self.total_food = num_foods
@@ -115,7 +116,7 @@ class Restaurant(Model):
         self.grid.place_agent(bin, (x, y))
 
     def create_foods(self):
-        random.seed(12345)
+        random.seed(SEED)
         food_unit = random.randint(2, 5)
 
         if food_unit > self.num_foods:
@@ -134,7 +135,7 @@ class Restaurant(Model):
         self.num_foods -= food_unit
 
     def create_waiters(self):
-        random.seed(12345)
+        random.seed(SEED)
         self.column_width = self.grid.width // self.num_waiters
         column = 0
         for i in range(self.num_waiters):
