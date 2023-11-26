@@ -34,16 +34,12 @@ public class WaiterSpawner : MonoBehaviour
             waiter.newX = (int)newPosition.x;
             waiter.newY = (int)newPosition.z;
         }
-        else
-        {
-            initWaiter(waiterId, newPosition);
-        }
     }
 
     /// <summary>
     /// The initWaiter method is responsible for initializing the waiter.
     /// </summary>
-    void initWaiter(string waiterId, Vector3 newPosition)
+    public void initWaiter(string waiterId, Vector3 newPosition)
     {
         GameObject waiterPrefab = gameManager.waiterPrefab;
 

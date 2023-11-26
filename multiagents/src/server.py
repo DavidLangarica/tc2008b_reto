@@ -46,7 +46,7 @@ def init():
 def step():
     global model
     if model is None:
-        initialize_model()
+        return jsonify({"message": "Model is not initialized"})
 
     model.step()
     model_data = model.datacollector.get_model_vars_dataframe()
@@ -56,7 +56,6 @@ def step():
     is_bin_found = get_bin_found_position(model_data, current_step)
     model_is_running = model.is_running
 
-    # Return
     return jsonify(
         {
             "currentStep": current_step,
@@ -71,7 +70,7 @@ def step():
 def generate_food():
     global model
     if model is None:
-        initialize_model()
+        return jsonify({"message": "Model is not initialized"})
 
     model.create_foods()  # Make sure this method exists in your model
     return jsonify({"message": "Food generated successfully"})

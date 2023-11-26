@@ -66,7 +66,7 @@ public class CameraControl : MonoBehaviour
         cameraPositions[2] = gridCenter + new Vector3(cameraDistance, 6.5f, 0);
         cameraPositions[3] = gridCenter + new Vector3(0, 6.5f, -cameraDistance);
 
-        cameraPositions[4] = gridCenter + new Vector3(0, cameraDistance, cameraDistance); 
+        cameraPositions[4] = gridCenter + new Vector3(0, cameraDistance, -cameraDistance); 
 
         targetPosition = cameraPositions[currentSide];
     }

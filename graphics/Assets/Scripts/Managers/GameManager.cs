@@ -41,13 +41,15 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public Waiter[] waiters;
 
-
     [HideInInspector]
     public bool isBinFound = false;
 
+    [HideInInspector]
+    public float stepUpdateTime = 1f;
+
     private Bin bin;
-    private float stepUpdateTime = 1f;
     private float foodUpdateTime = 5f;
+    private bool isRunning = true;
 
     /// <summary>
     /// Start is called before the first frame update
@@ -57,7 +59,7 @@ public class GameManager : MonoBehaviour
         simulationComplete.gameObject.SetActive(false);
         StartCoroutine(InitializeGame());
     }
-    
+
     /// <summary>
     /// The LoadDataAsync method is responsible for loading the data from the API.
     /// </summary>
@@ -95,10 +97,20 @@ public class GameManager : MonoBehaviour
             BinSpawner binSpawner = GetComponentInChildren<BinSpawner>();
             binSpawner.SpawnBin(gameState.Bin);
 
+            WaiterSpawner waiterSpawner = GetComponentInChildren<WaiterSpawner>();
+            foreach (var waiterGroup in gameState.Waiters)
+            {
+                foreach (var waiter in waiterGroup.Value)
+                {
+                    Vector3 newPosition = new Vector3(waiter.X, 0, waiter.Y);
+                    waiterSpawner.initWaiter(waiterGroup.Key, newPosition);
+                }
+            }
+
             steps = 0;
 
             InvokeRepeating(nameof(UpdateSteps), 0, stepUpdateTime);
-            InvokeRepeating(nameof(GenerateFood), 0, foodUpdateTime);
+            InvokeRepeating(nameof(GenerateFood), foodUpdateTime, foodUpdateTime);
         }
         else
         {
@@ -107,39 +119,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// The UpdateUpdateTimes method is responsible for updating the step and food update time.
+        /// <summary>
+    /// The UpdateTimes method is responsible for updating the step and food update time.
     /// </summary>
-    public void UpdateUpdateTimes(float newStepTime, float newFoodTime)
-    {
-        stepUpdateTime = newStepTime;
-        foodUpdateTime = newFoodTime;
-        UpdateWaiterSpeed(newStepTime);
-        RestartInvocations();
-    }
-
-    /// <summary>
-    /// The UpdateWaiterSpeed method is responsible for updating the waiter speed.
-    /// </summary>
-    public void UpdateWaiterSpeed(float newStepTime)
-    {
-        foreach (var waiter in waiters)
-        {
-            Waiter waiterObject = waiter.GetComponent<Waiter>();
-            waiterObject.AdjustInterpolationFrames(newStepTime);
-        }
-    }
-
-    /// <summary>
-    /// The RestartInvocations method is responsible for restarting the invocations.
-    /// </summary>
-    private void RestartInvocations()
+    public void UpdateTimes(float newStepTime, float newFoodTime)
     {
         CancelInvoke(nameof(UpdateSteps));
         CancelInvoke(nameof(GenerateFood));
 
-        InvokeRepeating(nameof(UpdateSteps), 0, stepUpdateTime);
-        InvokeRepeating(nameof(GenerateFood), 0, foodUpdateTime);
+        stepUpdateTime = newStepTime;
+        foodUpdateTime = newFoodTime;
+
+        InvokeRepeating(nameof(UpdateSteps), stepUpdateTime, stepUpdateTime);
+        InvokeRepeating(nameof(GenerateFood), foodUpdateTime, foodUpdateTime);
     }
 
     /// <summary>
@@ -163,14 +155,13 @@ public class GameManager : MonoBehaviour
             string stepData = stepDataTask.Result;
             GameState stepState = APIHelper.ParseJsonToGameState(stepData);
 
-            if (stepState.modelIsRunning)
+            if (isRunning)
             {
-                steps = stepState.currentStep;
-                stepCounter.text = "Step: " + steps.ToString();
 
                 UpdateBinFoundPosition(stepState.isBinFound);
                 UpdateWaiters(stepState.Waiters);
                 UpdateFood(stepState.Food);
+
             }
             else {
                 simulationComplete.gameObject.SetActive(true);
@@ -178,6 +169,9 @@ public class GameManager : MonoBehaviour
                 CancelInvoke(nameof(GenerateFood));
             }
 
+            steps = stepState.currentStep;
+            stepCounter.text = "Step: " + steps.ToString();
+            isRunning = stepState.modelIsRunning;
         }
         else
         {
@@ -214,9 +208,12 @@ public class GameManager : MonoBehaviour
         {
             foreach (var waiter in waiterGroup.Value)
             {
-                WaiterSpawner waiterSpawner = GetComponentInChildren<WaiterSpawner>();
                 Vector3 newPosition = new Vector3(waiter.X, 0, waiter.Y);
-                waiterSpawner.ManageWaiters(waiterGroup.Key, newPosition, waiter.CarryingFood);
+
+                Waiter waiterObject = spawnedWaiters[waiterGroup.Key].GetComponent<Waiter>();
+                waiterObject.CarryingFood = waiter.CarryingFood;
+                waiterObject.newX = (int)newPosition.x;
+                waiterObject.newY = (int)newPosition.z;
             }
         }
     }

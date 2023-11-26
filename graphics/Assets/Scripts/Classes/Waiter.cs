@@ -9,7 +9,7 @@ using UnityEngine;
 public class Waiter : MonoBehaviour
 {
     public Transform carryingPoint;
-    public int interpolationFramesCount = 60;
+    public int interpolationFramesCount = 45;
 
     [HideInInspector]
     public string id;
@@ -54,18 +54,9 @@ public class Waiter : MonoBehaviour
         bool changePositionX = transform.position.x != newX;
         bool changePositionZ = transform.position.z != newY;
 
-        if ((changePositionX || changePositionZ) && gameManager.steps != 0){
+        if (((changePositionX || changePositionZ) && gameManager.steps > 0)){
             moveWaiter(newX, newY);
         }
-    }
-
-    /// <summary>
-    /// The AdjustInterpolationFrames method is responsible for adjusting the interpolation frames.
-    /// </summary>
-    public void AdjustInterpolationFrames(float newStepTime)
-    {
-        float baseStepTime = 1f;
-        interpolationFramesCount = (int)(interpolationFramesCount * (baseStepTime / newStepTime));
     }
 
     /// <summary>
@@ -92,22 +83,8 @@ public class Waiter : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
-
-        StartCoroutine(animateWaiter(oldPosition, newPosition));
-    }
-
-    /// <summary>
-    /// The animateWaiter method is responsible for animating the waiter.
-    /// </summary>
-    IEnumerator animateWaiter(Vector3 oldPosition, Vector3 newPosition)
-    {
-        float interpolationRatio = 0;
-        while (interpolationRatio < 1)
-        {
-            interpolationRatio += 1f / interpolationFramesCount;
-            transform.position = Vector3.Lerp(oldPosition, newPosition, interpolationRatio);
-            yield return null;
-        }
+        
+        transform.position = newPosition;
     }
 
     /// <summary>

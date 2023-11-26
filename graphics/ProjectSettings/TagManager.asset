@@ -7,6 +7,7 @@ TagManager:
   - Paviment
   - Tree
   - Bin
+  - Food
   layers:
   - Default
   - TransparentFX

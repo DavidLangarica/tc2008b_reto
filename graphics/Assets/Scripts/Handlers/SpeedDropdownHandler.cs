@@ -65,6 +65,6 @@ public class SpeedDropdownHandler : MonoBehaviour
                 break;
         }
 
-        gameManager.UpdateUpdateTimes(speedUpdateTime, foodUpdateTime);
+        gameManager.UpdateTimes(speedUpdateTime, foodUpdateTime);
     }
 }
