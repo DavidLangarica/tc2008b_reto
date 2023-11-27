@@ -41,7 +41,6 @@ def get_waiter_position(model):
         {
             "id": agent.unique_id,
             "position": {"x": agent.pos[0], "y": agent.pos[1]},
-            # Conditional for carrying food "true" == 1, "false" == 0
             "carrying_food": 1 if agent.carrying_food else 0,
         }
         for agent in model.schedule.agents
@@ -115,7 +114,6 @@ class Restaurant(Model):
         self.grid.place_agent(bin, (x, y))
 
     def create_foods(self):
-        random.seed(SEED)
         food_unit = random.randint(2, 5)
 
         if food_unit > self.num_foods:

@@ -72,7 +72,7 @@ def generate_food():
     if model is None:
         return jsonify({"message": "Model is not initialized"})
 
-    model.create_foods()  # Make sure this method exists in your model
+    model.create_foods()  
     return jsonify({"message": "Food generated successfully"})
 
 if __name__ == "__main__":
