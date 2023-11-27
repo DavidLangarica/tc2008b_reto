@@ -38,13 +38,15 @@ public class PavimentSpawner : MonoBehaviour
             {
                 GameObject go = Instantiate(pavimentPrefab, new Vector3(i, 0, j), Quaternion.identity);
                 go.transform.parent = transform;
+                
+                Renderer renderer = go.GetComponent<Renderer>();
 
                 if (i == binPositionX && j == binPositionZ)
                 {
                     go.tag = "Bin";
-                    Renderer renderer = go.GetComponent<Renderer>();
                     if (renderer != null)
                     {
+                        // Mark the bin position with an orange color.
                         Material material = renderer.material;
                         material.color = new Color(1f, 0.49f, 0.09f);
                     }
@@ -54,9 +56,9 @@ public class PavimentSpawner : MonoBehaviour
                     }
                 } else if ((i + j) % 2 == 0)
                 {
-                    Renderer renderer = go.GetComponent<Renderer>();
                     if (renderer != null)
                     {
+                        // Mark the even positions with a brighter color.
                         Material material = renderer.material;
                         material.color = new Color(0.5f, 0.5f, 0.5f);
                     }

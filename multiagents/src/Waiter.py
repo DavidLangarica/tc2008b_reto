@@ -26,6 +26,12 @@ class Waiter(Agent):
             self.move_to_target(self.model.bin_position)
         else:
             self.search_food()
+            
+    def is_cell_free(self, pos):
+        cell_contents = self.model.grid.get_cell_list_contents(pos)
+        return not any(
+            isinstance(agent, Waiter) for agent in cell_contents
+        )
 
     def search_routine(self):
         # Moverse en el eje X
@@ -50,7 +56,13 @@ class Waiter(Agent):
 
         # Moverse a la nueva posición
         new_position = (new_x, new_y)
-        self.model.grid.move_agent(self, new_position)
+        
+        # Verificar si la nueva posición está libre
+        if self.is_cell_free(new_position):
+            self.model.grid.move_agent(self, new_position)
+        else:
+            pass
+        
 
     def search_bin(self):
         current_cell_contents = self.model.grid.get_cell_list_contents(self.pos)
@@ -133,10 +145,7 @@ class Waiter(Agent):
         possible_steps = [
             step
             for step in possible_steps
-            if not any(
-                isinstance(agent, Waiter)
-                for agent in self.model.grid.get_cell_list_contents(step)
-            )
+            if self.is_cell_free(step)
         ]
 
         best_step = min(

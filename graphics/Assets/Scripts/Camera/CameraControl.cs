@@ -55,18 +55,20 @@ public class CameraControl : MonoBehaviour
     /// <summary>
     /// The CalculateCameraPositions method is responsible for calculating the camera positions.
     /// </summary>
-    private void CalculateCameraPositions()
+    void CalculateCameraPositions()
     {
         float cameraDistance = Mathf.Max(gridWidth, gridHeight);
         Vector3 gridCenter = new Vector3(gridWidth / 2f, 0, gridHeight / 2f);
 
         Vector3[] cameraPositions = new Vector3[5];
-        cameraPositions[0] = gridCenter + new Vector3(-cameraDistance, 6.5f, 0); 
-        cameraPositions[1] = gridCenter + new Vector3(0, 6.5f, cameraDistance); 
-        cameraPositions[2] = gridCenter + new Vector3(cameraDistance, 6.5f, 0);
-        cameraPositions[3] = gridCenter + new Vector3(0, 6.5f, -cameraDistance);
+        float cameraHeight = 6.5f;
 
-        cameraPositions[4] = gridCenter + new Vector3(0, cameraDistance, -cameraDistance); 
+        cameraPositions[0] = gridCenter + new Vector3(-cameraDistance, cameraHeight, 0); 
+        cameraPositions[1] = gridCenter + new Vector3(0, cameraHeight, cameraDistance); 
+        cameraPositions[2] = gridCenter + new Vector3(cameraDistance, cameraHeight, 0);
+        cameraPositions[3] = gridCenter + new Vector3(0, cameraHeight, -cameraDistance);
+
+        cameraPositions[4] = gridCenter + new Vector3(cameraDistance / 1.5f, cameraDistance / 1.2f, 0); 
 
         targetPosition = cameraPositions[currentSide];
     }

@@ -19,13 +19,13 @@ public class SpeedDropdownHandler : MonoBehaviour
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        initDropdown();
+        InitializeDropdown();
     }
 
     /// <summary>
-    /// The initDropdown method is responsible for initializing the speed dropdown.
+    /// The InitializeDropdown method is responsible for initializing the speed dropdown.
     /// </summary>
-    void initDropdown()
+    void InitializeDropdown()
     {
         dropdown = GetComponent<TMPro.TMP_Dropdown>();
 

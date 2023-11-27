@@ -9,7 +9,6 @@ using UnityEngine;
 public class Waiter : MonoBehaviour
 {
     public Transform carryingPoint;
-    public int interpolationFramesCount = 45;
 
     [HideInInspector]
     public string id;
@@ -27,20 +26,20 @@ public class Waiter : MonoBehaviour
     public int Y;
 
     [HideInInspector]
-    public int newX;
-    
-    [HideInInspector]
-    public int newY;
+    public Color mainColor;
 
     [HideInInspector]
-    public Color mainColor;
+    public Animator animator;
+
+    [HideInInspector]
+    public Vector3 targetPosition;
 
     private GameObject foodCarried = null;
     private GameManager gameManager;
-    private Animator animator;
+    private float moveDuration = 1f;
 
     /// <summary>
-    /// The moveWaiter method is responsible for moving the waiter in each step.
+    /// The Start method is responsible for moving the waiter in each step.
     /// </summary>
     void Start(){
         gameManager = GetComponentInParent<GameManager>();
@@ -51,41 +50,49 @@ public class Waiter : MonoBehaviour
     /// The Update method is responsible for updating the waiter's position.
     /// </summary>
     void Update(){
-        bool changePositionX = transform.position.x != newX;
-        bool changePositionZ = transform.position.z != newY;
-
-        if (((changePositionX || changePositionZ) && gameManager.steps > 0)){
-            moveWaiter(newX, newY);
+        if ((transform.position != targetPosition && gameManager.steps > 0)){
+            MoveWaiter();
         }
+    }
+    
+    /// <summary>
+    /// The MoveWaiter method is responsible for moving the waiter in each step.
+    /// </summary>
+    public void MoveWaiter()
+    {        
+        Vector3 oldPosition = transform.position;
+
+        moveDuration = gameManager.GetStepUpdateTime();
+        StartCoroutine(AnimateWaiterRotation(oldPosition));
+        StartCoroutine(AnimateWaiterPosition(oldPosition));
     }
 
     /// <summary>
-    /// The moveWaiter method is responsible for moving the waiter in each step.
+    /// The AnimateWaiterRotation method is responsible for animating the waiter's rotation.
     /// </summary>
-    public void moveWaiter(float newX, float newY)
-    {        
-        Vector3 oldPosition = transform.position;
-        Vector3 newPosition = new Vector3(newX, 0.1f, newY);
+    IEnumerator AnimateWaiterRotation(Vector3 oldPosition)
+    {
+        Vector3 direction = targetPosition - oldPosition;
 
-        if (oldPosition.x > newPosition.x)
+        if (direction == Vector3.zero)
         {
-            transform.rotation = Quaternion.Euler(0, 270, 0);
+            yield break;
         }
-        else if (oldPosition.x < newPosition.x)
-        {
-            transform.rotation = Quaternion.Euler(0, 90, 0);
-        }
-        else if (oldPosition.z > newPosition.z)
-        {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
-        else if (oldPosition.z < newPosition.z)
-        {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
-        
-        transform.position = newPosition;
+
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Time.deltaTime / moveDuration * 2f);
+        yield return null;
     }
+
+    /// <summary>
+    /// The AnimateWaiterPosition method is responsible for animating the waiter.
+    /// </summary>
+    IEnumerator AnimateWaiterPosition(Vector3 oldPosition)
+    {
+        moveDuration /= 2f;
+        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime / moveDuration);
+        yield return null;
+    }    
 
     /// <summary>
     /// The onTriggerEnter method is responsible for detecting collisions.
@@ -97,30 +104,36 @@ public class Waiter : MonoBehaviour
         string collidedObjectName = collidedObject.name;
 
         if (CarryingFood == 0 && gameManager.isBinFound && collidedObjectName.Contains("food") && foodCarried == null){
-            pickFood(collidedObject);
+            PickFood(collidedObject);
         }
         else if (collidedObjectName.Contains("Bin") && foodCarried != null){
-            placeFood(foodCarried);
+            PlaceFood(foodCarried);
         }
     }
 
-    void activateEmission(){
+    /// <summary>
+    /// The ActivateEmission method is responsible for activating the emission.
+    /// </summary>
+    void ActivateEmission(){
         Renderer renderer = GetComponentInChildren<Renderer>();
         Material material = renderer.materials[0];
-        material.SetColor("_EmissionColor", mainColor * 1.5f);
+        material.SetColor("_EmissionColor", mainColor * 1.8f);
     }
 
-    void deactivateEmission(){
+    /// <summary>
+    /// The DeactivateEmission method is responsible for deactivating the emission.
+    /// </summary>
+    void DeactivateEmission(){
         Renderer renderer = GetComponentInChildren<Renderer>();
         Material material = renderer.materials[0];
         material.SetColor("_EmissionColor", mainColor * 0);
     }
 
     /// <summary>   
-    /// The pickFood method is responsible for picking up the food.
+    /// The PickFood method is responsible for picking up the food.
     /// </summary>
-    public void pickFood(GameObject food){
-        activateEmission();
+    public void PickFood(GameObject food){
+        ActivateEmission();
         animator.SetFloat("Blend", 1f);
 
         foodCarried = food;
@@ -134,10 +147,10 @@ public class Waiter : MonoBehaviour
     }
 
     /// <summary>
-    /// The placeFood method is responsible for placing the food.
+    /// The PlaceFood method is responsible for placing the food.
     /// </summary>
-    public void placeFood(GameObject food){
-        deactivateEmission();
+    public void PlaceFood(GameObject food){
+        DeactivateEmission();
         foodCarried = null;
         Destroy(food);
         animator.SetFloat("Blend", 0f);

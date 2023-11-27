@@ -69,7 +69,6 @@ def track_food_picking(model):
             food_picking_steps[agent.unique_id] = agent.food_picking_steps
     return food_picking_steps
 
-
 class Restaurant(Model):
     def __init__(self, width, height, num_waiters, num_foods):
         random.seed(SEED)
@@ -155,24 +154,7 @@ class Restaurant(Model):
         if self.food_placed == self.total_food:
             self.is_running = False
 
-    def check_waiter_collisions(self):
-        # Iterate over all grid cells
-        for x in range(self.grid.width):
-            for y in range(self.grid.height):
-                cell_contents = self.grid.get_cell_list_contents((x, y))
-                waiters_in_cell = [agent for agent in cell_contents if isinstance(agent, Waiter)]
-
-                # If more than one waiter is in the same cell, print a message
-                if len(waiters_in_cell) > 1:
-                    # move one of the waiters to an empty cell
-                    empty_cells = self.grid.get_neighborhood((x, y), moore=False, include_center=False)
-                    empty_cells = [cell for cell in empty_cells if self.grid.is_cell_empty(cell)]
-                    if empty_cells:
-                        cell = random.choice(empty_cells)
-                        self.grid.move_agent(waiters_in_cell[0], cell)
-
     def step(self):
-        self.check_waiter_collisions()
         self.datacollector.collect(self)
         self.schedule.step()
         self.simulation_finished()

@@ -44,10 +44,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public bool isBinFound = false;
 
-    [HideInInspector]
-    public float stepUpdateTime = 1f;
-
     private Bin bin;
+    private float stepUpdateTime = 1f;
     private float foodUpdateTime = 5f;
     private bool isRunning = true;
 
@@ -70,9 +68,9 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// The setGridAttributes method is responsible for setting the grid attributes.
+    /// The SetGridAttributes method is responsible for setting the grid attributes.
     /// </summary>
-    private void setGridAttributes(Grid gridData)
+    void SetGridAttributes(Grid gridData)
     {
         width = gridData.Width;
         height = gridData.Height;
@@ -89,7 +87,7 @@ public class GameManager : MonoBehaviour
         if (loadDataTask.Status == TaskStatus.RanToCompletion)
         {
             GameState gameState = loadDataTask.Result;
-            setGridAttributes(gameState.Grid);
+            SetGridAttributes(gameState.Grid);
 
             PavimentSpawner pavimentSpawner = GetComponentInChildren<PavimentSpawner>();
             pavimentSpawner.SpawnPaviment(gameState.Bin);
@@ -103,7 +101,7 @@ public class GameManager : MonoBehaviour
                 foreach (var waiter in waiterGroup.Value)
                 {
                     Vector3 newPosition = new Vector3(waiter.X, 0, waiter.Y);
-                    waiterSpawner.initWaiter(waiterGroup.Key, newPosition);
+                    waiterSpawner.SpawnWaiter(waiterGroup.Key, newPosition);
                 }
             }
 
@@ -137,7 +135,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// The UpdateSteps method is responsible for updating the steps.
     /// </summary>
-    private void UpdateSteps()
+    void UpdateSteps()
     {
         StartCoroutine(UpdateStepsCoroutine());
     }
@@ -164,9 +162,7 @@ public class GameManager : MonoBehaviour
 
             }
             else {
-                simulationComplete.gameObject.SetActive(true);
-                CancelInvoke(nameof(UpdateSteps));
-                CancelInvoke(nameof(GenerateFood));
+                EndSimulation(stepState.Waiters);
             }
 
             steps = stepState.currentStep;
@@ -181,17 +177,27 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// The endSimulation method is responsible for ending the simulation.
+    /// The EndSimulation method is responsible for ending the simulation.
     /// </summary>
-    void endSimulation()
+    void EndSimulation(Dictionary<string, WaiterModel[]> waiters)
     {
-        EditorApplication.isPlaying = false;
+        foreach (var waiterGroup in waiters)
+        {
+            foreach (var waiter in waiterGroup.Value)
+            {
+                Waiter waiterObject = spawnedWaiters[waiterGroup.Key].GetComponent<Waiter>();
+                waiterObject.animator.SetFloat("Blend", 3f);
+            }
+        }
+        simulationComplete.gameObject.SetActive(true);
+        CancelInvoke(nameof(UpdateSteps));
+        CancelInvoke(nameof(GenerateFood));
     }   
 
     /// <summary>
     /// The UpdateBinFoundPosition method is responsible for updating the bin found position state.
     /// </summary>
-    private void UpdateBinFoundPosition(bool isBinFoundData)
+    void UpdateBinFoundPosition(bool isBinFoundData)
     {
         if (isBinFoundData)
         {
@@ -202,18 +208,17 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// The UpdateWaiters method is responsible for updating the waiters.
     /// </summary>
-    private void UpdateWaiters(Dictionary<string, WaiterModel[]> waiters)
+    void UpdateWaiters(Dictionary<string, WaiterModel[]> waiters)
     {
         foreach (var waiterGroup in waiters)
         {
             foreach (var waiter in waiterGroup.Value)
             {
-                Vector3 newPosition = new Vector3(waiter.X, 0, waiter.Y);
+                Vector3 newPosition = new Vector3(waiter.X, 0.1f, waiter.Y);
 
                 Waiter waiterObject = spawnedWaiters[waiterGroup.Key].GetComponent<Waiter>();
                 waiterObject.CarryingFood = waiter.CarryingFood;
-                waiterObject.newX = (int)newPosition.x;
-                waiterObject.newY = (int)newPosition.z;
+                waiterObject.targetPosition = newPosition;
             }
         }
     }
@@ -221,7 +226,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// The GenerateFood method is responsible for generating the food.
     /// </summary>
-    private void GenerateFood()
+    void GenerateFood()
     {
         StartCoroutine(GenerateFoodCoroutine());
     }
@@ -252,7 +257,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// The UpdateFood method is responsible for updating the food.
     /// </summary>
-    private void UpdateFood(Dictionary<string, FoodModel> foods)
+    void UpdateFood(Dictionary<string, FoodModel> foods)
     {
         foreach (var foodItem in foods)
         {
@@ -260,5 +265,12 @@ public class GameManager : MonoBehaviour
             FoodSpawner foodSpawner = GetComponentInChildren<FoodSpawner>();
             foodSpawner.AddFood(foodItem.Key, newPosition);
         }
+    }
+
+    /// <summary>
+    /// The GetStepUpdateTime method is responsible for getting the step update time.
+    /// </summary>
+    public float GetStepUpdateTime(){
+        return stepUpdateTime;
     }
 }

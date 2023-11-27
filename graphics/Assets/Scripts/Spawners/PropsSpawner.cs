@@ -29,12 +29,10 @@ public class PropsSpawner : MonoBehaviour
     /// </summary>
     void SpawnTrees()
     {
-        int numTrees = 100; 
-        float minDistanceFromPaviment = 10f;
+        int numTrees = 150; 
         GameObject treeA = gameManager.treeA;
         GameObject treeB = gameManager.treeB;
 
-        // Encontrar el objeto Terrain
         GameObject environment = GameObject.Find("ENVIRONMENT");
         GameObject terrainObject = environment.transform.Find("Terrain").gameObject;
 
@@ -44,7 +42,6 @@ public class PropsSpawner : MonoBehaviour
             return;
         }
 
-        // Obtener el MeshCollider del terreno
         MeshCollider terrainCollider = terrainObject.GetComponent<MeshCollider>();
 
         if (terrainCollider == null)
@@ -69,31 +66,14 @@ public class PropsSpawner : MonoBehaviour
                     if (hit.collider.gameObject == terrainObject)
                     {
                         Vector3 treePosition = hit.point;
-                        if (IsFarEnoughFromPaviment(treePosition, minDistanceFromPaviment))
-                        {
-                            GameObject treeToSpawn = (Random.Range(0, 2) == 0) ? treeA : treeB;
-                            GameObject go = Instantiate(treeToSpawn, treePosition, Quaternion.identity);
-                            go.transform.parent = transform;
-                            go.transform.Rotate(-90, 0, 0);
-                            treePlaced = true;
-                        }
+                        GameObject treeToSpawn = (Random.Range(0, 2) == 0) ? treeA : treeB;
+                        GameObject go = Instantiate(treeToSpawn, treePosition, Quaternion.identity);
+                        go.transform.parent = transform;
+                        go.transform.Rotate(-90, 0, 0);
+                        treePlaced = true;
                     }
                 }
             }
         }
-    }
-
-    bool IsFarEnoughFromPaviment(Vector3 position, float minDistance)
-    {
-        // si colisiona con el pavimento, devolver false
-        Collider[] hitColliders = Physics.OverlapSphere(position, minDistance);
-        foreach (var hitCollider in hitColliders)
-        {
-            if (hitCollider.gameObject.tag == "Paviment")
-            {
-                return false;
-            }
-        }
-        return true;
     }
 }

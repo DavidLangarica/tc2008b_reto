@@ -34,6 +34,4 @@ public class BinSpawner : MonoBehaviour
         go.transform.position = new Vector3(binX, 38.5f, binZ);
         go.transform.parent = transform;
     }
-
-
 }

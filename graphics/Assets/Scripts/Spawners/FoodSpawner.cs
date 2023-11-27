@@ -22,6 +22,9 @@ public class FoodSpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// The AddFood method is responsible for adding the food.
+    /// </summary>
     public void AddFood(string foodId, Vector3 position)
     {
         if (!gameManager.spawnedFood.ContainsKey(foodId))
@@ -30,7 +33,6 @@ public class FoodSpawner : MonoBehaviour
         }
     }
     
-
     /// <summary>
     /// The SpawnFood method is responsible for spawning the food.
     /// </summary>
